@@ -4,6 +4,7 @@
 #ifndef _SPTAG_COMMON_DISTANCEUTILS_H_
 #define _SPTAG_COMMON_DISTANCEUTILS_H_
 
+#include <atomic>
 #include <functional>
 #include <iostream>
 
@@ -25,6 +26,7 @@ namespace SPTAG
             template <typename T>
             static float ComputeL2Distance(const T* pX, const T* pY, DimensionType length)
             {
+                ++g_distanceCalcCount;
                 const T* pEnd4 = pX + ((length >> 2) << 2);
                 const T* pEnd1 = pX + length;
 
@@ -114,6 +116,40 @@ namespace SPTAG
             {
                 return 1 - d;
             }
+
+            static void DistanceCalcCountAdd(size_t count = 1)
+            {
+#ifdef DISTANCE_COMPUTE_COUNT
+                if (enableDistanceCalcCountFlag)
+                {
+                    g_distanceCalcCount.fetch_add(count, std::memory_order_relaxed);
+                }
+#endif
+            }
+
+            static size_t GetDistanceCalcCount()
+            {
+                return g_distanceCalcCount.load();
+            }
+
+            static void ResetDistanceCalcCount()
+            {
+                g_distanceCalcCount.store(0);
+            }
+            
+            static void EnableDistanceCalcCount()
+            {
+                enableDistanceCalcCountFlag = true;
+            }
+
+            static void DisableDistanceCalcCount()
+            {
+                enableDistanceCalcCountFlag = false;
+            }
+
+        private:
+            static std::atomic<size_t> g_distanceCalcCount;
+            static bool enableDistanceCalcCountFlag;
         };
         template<typename T>
         inline DistanceCalcReturn<T> DistanceCalcSelector(SPTAG::DistCalcMethod p_method)

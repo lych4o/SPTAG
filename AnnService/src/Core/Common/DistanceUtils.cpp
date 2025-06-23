@@ -14,6 +14,9 @@ using namespace SPTAG::COMMON;
 #define DIFF256 diff256.m256_f32
 #endif
 
+std::atomic<size_t> DistanceUtils::g_distanceCalcCount(0);
+bool DistanceUtils::enableDistanceCalcCountFlag = false;
+
 inline __m128 _mm_mul_epi8(__m128i X, __m128i Y)
 {
     __m128i zero = _mm_setzero_si128();
@@ -304,6 +307,7 @@ inline __m512 _mm512_sqdf_ps(__m512 X, __m512 Y)
 
 float DistanceUtils::ComputeL2Distance_SSE(const std::int8_t* pX, const std::int8_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::int8_t* pEnd32 = pX + ((length >> 5) << 5);
     const std::int8_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::int8_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -333,6 +337,7 @@ float DistanceUtils::ComputeL2Distance_SSE(const std::int8_t* pX, const std::int
 
 float DistanceUtils::ComputeL2Distance_AVX(const std::int8_t* pX, const std::int8_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::int8_t* pEnd32 = pX + ((length >> 5) << 5);
     const std::int8_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::int8_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -362,6 +367,7 @@ float DistanceUtils::ComputeL2Distance_AVX(const std::int8_t* pX, const std::int
 
 float DistanceUtils::ComputeL2Distance_AVX512(const std::int8_t* pX, const std::int8_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::int8_t* pEnd32 = pX + ((length >> 5) << 5);
     const std::int8_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::int8_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -401,6 +407,7 @@ float DistanceUtils::ComputeL2Distance_AVX512(const std::int8_t* pX, const std::
 
 float DistanceUtils::ComputeL2Distance_SSE(const std::uint8_t* pX, const std::uint8_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::uint8_t* pEnd32 = pX + ((length >> 5) << 5);
     const std::uint8_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::uint8_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -430,6 +437,7 @@ float DistanceUtils::ComputeL2Distance_SSE(const std::uint8_t* pX, const std::ui
 
 float DistanceUtils::ComputeL2Distance_AVX(const std::uint8_t* pX, const std::uint8_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::uint8_t* pEnd32 = pX + ((length >> 5) << 5);
     const std::uint8_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::uint8_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -459,6 +467,7 @@ float DistanceUtils::ComputeL2Distance_AVX(const std::uint8_t* pX, const std::ui
 
 float DistanceUtils::ComputeL2Distance_AVX512(const std::uint8_t* pX, const std::uint8_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::uint8_t* pEnd32 = pX + ((length >> 5) << 5);
     const std::uint8_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::uint8_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -498,6 +507,7 @@ float DistanceUtils::ComputeL2Distance_AVX512(const std::uint8_t* pX, const std:
 
 float DistanceUtils::ComputeL2Distance_SSE(const std::int16_t* pX, const std::int16_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::int16_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::int16_t* pEnd8 = pX + ((length >> 3) << 3);
     const std::int16_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -528,6 +538,7 @@ float DistanceUtils::ComputeL2Distance_SSE(const std::int16_t* pX, const std::in
 
 float DistanceUtils::ComputeL2Distance_AVX(const std::int16_t* pX, const std::int16_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::int16_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::int16_t* pEnd8 = pX + ((length >> 3) << 3);
     const std::int16_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -558,6 +569,7 @@ float DistanceUtils::ComputeL2Distance_AVX(const std::int16_t* pX, const std::in
 
 float DistanceUtils::ComputeL2Distance_AVX512(const std::int16_t* pX, const std::int16_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::int16_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::int16_t* pEnd8 = pX + ((length >> 3) << 3);
     const std::int16_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -598,6 +610,7 @@ float DistanceUtils::ComputeL2Distance_AVX512(const std::int16_t* pX, const std:
 
 float DistanceUtils::ComputeL2Distance_SSE(const float* pX, const float* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const float* pEnd16 = pX + ((length >> 4) << 4);
     const float* pEnd4 = pX + ((length >> 2) << 2);
     const float* pEnd1 = pX + length;
@@ -624,6 +637,7 @@ float DistanceUtils::ComputeL2Distance_SSE(const float* pX, const float* pY, Dim
 
 float DistanceUtils::ComputeL2Distance_AVX(const float* pX, const float* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const float* pEnd16 = pX + ((length >> 4) << 4);
     const float* pEnd4 = pX + ((length >> 2) << 2);
     const float* pEnd1 = pX + length;
@@ -649,6 +663,7 @@ float DistanceUtils::ComputeL2Distance_AVX(const float* pX, const float* pY, Dim
 
 float DistanceUtils::ComputeL2Distance_AVX512(const float* pX, const float* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const float* pEnd8 = pX + ((length >> 3) << 3);
     const float* pEnd4 = pX + ((length >> 2) << 2);
     const float* pEnd1 = pX + length;
@@ -683,6 +698,7 @@ float DistanceUtils::ComputeL2Distance_AVX512(const float* pX, const float* pY, 
 
 float DistanceUtils::ComputeCosineDistance_SSE(const std::int8_t* pX, const std::int8_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::int8_t* pEnd32 = pX + ((length >> 5) << 5);
     const std::int8_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::int8_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -711,6 +727,7 @@ float DistanceUtils::ComputeCosineDistance_SSE(const std::int8_t* pX, const std:
 
 float DistanceUtils::ComputeCosineDistance_AVX(const std::int8_t* pX, const std::int8_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::int8_t* pEnd32 = pX + ((length >> 5) << 5);
     const std::int8_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::int8_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -739,6 +756,7 @@ float DistanceUtils::ComputeCosineDistance_AVX(const std::int8_t* pX, const std:
 
 float DistanceUtils::ComputeCosineDistance_AVX512(const std::int8_t* pX, const std::int8_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::int8_t* pEnd32 = pX + ((length >> 5) << 5);
     const std::int8_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::int8_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -777,6 +795,7 @@ float DistanceUtils::ComputeCosineDistance_AVX512(const std::int8_t* pX, const s
 
 float DistanceUtils::ComputeCosineDistance_SSE(const std::uint8_t* pX, const std::uint8_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::uint8_t* pEnd32 = pX + ((length >> 5) << 5);
     const std::uint8_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::uint8_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -805,6 +824,7 @@ float DistanceUtils::ComputeCosineDistance_SSE(const std::uint8_t* pX, const std
 
 float DistanceUtils::ComputeCosineDistance_AVX(const std::uint8_t* pX, const std::uint8_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::uint8_t* pEnd32 = pX + ((length >> 5) << 5);
     const std::uint8_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::uint8_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -833,6 +853,7 @@ float DistanceUtils::ComputeCosineDistance_AVX(const std::uint8_t* pX, const std
 
 float DistanceUtils::ComputeCosineDistance_AVX512(const std::uint8_t* pX, const std::uint8_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::uint8_t* pEnd32 = pX + ((length >> 5) << 5);
     const std::uint8_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::uint8_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -871,6 +892,7 @@ float DistanceUtils::ComputeCosineDistance_AVX512(const std::uint8_t* pX, const 
 
 float DistanceUtils::ComputeCosineDistance_SSE(const std::int16_t* pX, const std::int16_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::int16_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::int16_t* pEnd8 = pX + ((length >> 3) << 3);
     const std::int16_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -900,6 +922,7 @@ float DistanceUtils::ComputeCosineDistance_SSE(const std::int16_t* pX, const std
 
 float DistanceUtils::ComputeCosineDistance_AVX(const std::int16_t* pX, const std::int16_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::int16_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::int16_t* pEnd8 = pX + ((length >> 3) << 3);
     const std::int16_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -929,6 +952,7 @@ float DistanceUtils::ComputeCosineDistance_AVX(const std::int16_t* pX, const std
 
 float DistanceUtils::ComputeCosineDistance_AVX512(const std::int16_t* pX, const std::int16_t* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const std::int16_t* pEnd16 = pX + ((length >> 4) << 4);
     const std::int16_t* pEnd8 = pX + ((length >> 3) << 3);
     const std::int16_t* pEnd4 = pX + ((length >> 2) << 2);
@@ -968,6 +992,7 @@ float DistanceUtils::ComputeCosineDistance_AVX512(const std::int16_t* pX, const 
 
 float DistanceUtils::ComputeCosineDistance_SSE(const float* pX, const float* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const float* pEnd16 = pX + ((length >> 4) << 4);
     const float* pEnd4 = pX + ((length >> 2) << 2);
     const float* pEnd1 = pX + length;
@@ -992,6 +1017,7 @@ float DistanceUtils::ComputeCosineDistance_SSE(const float* pX, const float* pY,
 
 float DistanceUtils::ComputeCosineDistance_AVX(const float* pX, const float* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const float* pEnd16 = pX + ((length >> 4) << 4);
     const float* pEnd4 = pX + ((length >> 2) << 2);
     const float* pEnd1 = pX + length;
@@ -1015,6 +1041,7 @@ float DistanceUtils::ComputeCosineDistance_AVX(const float* pX, const float* pY,
 
 float DistanceUtils::ComputeCosineDistance_AVX512(const float* pX, const float* pY, DimensionType length)
 {
+DistanceCalcCountAdd();
     const float* pEnd8 = pX + ((length >> 3) << 3);
     const float* pEnd4 = pX + ((length >> 2) << 2);
     const float* pEnd1 = pX + length;

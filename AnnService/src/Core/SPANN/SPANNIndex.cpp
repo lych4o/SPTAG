@@ -38,6 +38,7 @@ namespace SPTAG
         template <typename T>
         void Index<T>::SetQuantizer(std::shared_ptr<SPTAG::COMMON::IQuantizer> quantizer)
         {
+            printf("set quantizer for spann idex!!!!!!!!!!!!!!");
             m_pQuantizer = quantizer;
             if (m_pQuantizer)
             {

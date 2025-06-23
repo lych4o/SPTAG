@@ -165,6 +165,9 @@ namespace SPTAG {
 			}
 
 			if (searchSSD) {
+				SPTAG::COMMON::DistanceUtils::ResetDistanceCalcCount();
+				SPTAG::COMMON::DistanceUtils::EnableDistanceCalcCount();
+				
 #define DefineVectorValueType(Name, Type) \
 	if (opts->m_valueType == VectorValueType::Name) { \
         SSDIndex::Search((SPANN::Index<Type>*)(index.get())); \
@@ -172,6 +175,9 @@ namespace SPTAG {
 
 #include "inc/Core/DefinitionList.h"
 #undef DefineVectorValueType
+				size_t count = SPTAG::COMMON::DistanceUtils::GetDistanceCalcCount();
+				std::cout << "Distance computation count: " << count << std::endl;
+				SPTAG::COMMON::DistanceUtils::DisableDistanceCalcCount();
 			}
 			return 0;
 		}
