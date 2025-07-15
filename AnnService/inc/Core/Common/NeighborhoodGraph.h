@@ -310,6 +310,8 @@ break;
                 std::vector<std::vector<SizeType>> TptreeDataIndices(m_iTPTNumber, std::vector<SizeType>(m_iGraphSize));
                 std::vector<std::vector<std::pair<SizeType, SizeType>>> TptreeLeafNodes(m_iTPTNumber, std::vector<std::pair<SizeType, SizeType>>());
 
+                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "BuildInitKNNGraph: m_iGraphSize = %d, m_iNeighborhoodSize = %d, m_iTPTNumber = %d\n", m_iGraphSize, m_iNeighborhoodSize, m_iTPTNumber);
+                
                 for (SizeType i = 0; i < m_iGraphSize; i++)
                     for (DimensionType j = 0; j < m_iNeighborhoodSize; j++)
                         (NeighborhoodDists)[i][j] = MaxDist;

@@ -87,9 +87,14 @@ namespace SPTAG
                 }
                 else
                 {
+                    SPTAGLIB_LOG(Helper::LogLevel::LL_Error, "fuck!!!!!!!!!!!! Index out of range in Dataset. Index: %d Size: %d", index, R());
+                    int *p = nullptr;
+                    *p = 42;
+                    SPTAGLIB_LOG(Helper::LogLevel::LL_Error, "p: !!!!!!!!!!! %d", *p);
                     std::ostringstream oss;
                     oss << "Index out of range in Dataset. Index: " << index << " Size: " << R();
-                    throw std::out_of_range(oss.str());
+                    exit(-1);
+                    // throw std::out_of_range(oss.str());
                 }
             }
 
