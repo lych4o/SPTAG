@@ -205,7 +205,8 @@ namespace SPTAG {
 
                     SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Start warmup...\n");
                     SearchSequential(p_index, numThreads, warmupResults, warmpUpStats, p_opts.m_queryCountLimit, internalResultNum);
-                    SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "\nFinish warmup...\n");
+                    SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Finish warmup...\n");
+                    SPTAG::COMMON::DistanceUtils::ResetDistanceCalcCount(); // Reset distance count after warmup
                 }
 
                 SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Start loading QuerySet...\n");
@@ -230,9 +231,14 @@ namespace SPTAG {
 
                 SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Start ANN Search...\n");
 
+                SPTAG::COMMON::DistanceUtils::ResetDistanceCalcCount();
+
                 SearchSequential(p_index, numThreads, results, stats, p_opts.m_queryCountLimit, internalResultNum);
 
-                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "\nFinish ANN Search...\n");
+                size_t count = SPTAG::COMMON::DistanceUtils::GetDistanceCalcCount();
+                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Total Distance Calculation Count: %zu\n", count);
+
+                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Finish ANN Search...\n");
 
                 std::shared_ptr<VectorSet> vectorSet;
 
@@ -280,7 +286,6 @@ namespace SPTAG {
                     if (ptr->ReadBinary(4, tmp) == 4) {
                         SPTAGLIB_LOG(Helper::LogLevel::LL_Error, "Truth number is larger than query number(%d)!\n", numQueries);
                     }
-
                     recall = COMMON::TruthSet::CalculateRecall<ValueType>((p_index->GetMemoryIndex()).get(), results, truth, K, truthK, querySet, vectorSet, numQueries, nullptr, false, &MRR);
                     SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Recall%d@%d: %f MRR@%d: %f\n", truthK, K, recall, K, MRR);
                 }

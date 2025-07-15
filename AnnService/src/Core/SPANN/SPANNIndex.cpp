@@ -38,7 +38,6 @@ namespace SPTAG
         template <typename T>
         void Index<T>::SetQuantizer(std::shared_ptr<SPTAG::COMMON::IQuantizer> quantizer)
         {
-            printf("set quantizer for spann idex!!!!!!!!!!!!!!");
             m_pQuantizer = quantizer;
             if (m_pQuantizer)
             {
@@ -766,7 +765,7 @@ namespace SPTAG
             }
 
             SPTAGLIB_LOG(Helper::LogLevel::LL_Info,
-                "Seleted Nodes: %u, about %.2lf%% of total.\n",
+                "Selected Nodes: %u, about %.2lf%% of total.\n",
                 static_cast<unsigned int>(selected.size()),
                 selected.size() * 100.0 / data.R());
 

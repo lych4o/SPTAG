@@ -172,7 +172,7 @@ namespace SPTAG
                     if (curIndexFile == nullptr || !curIndexFile->Initialize(curFile.c_str(), std::ios::binary | std::ios::in, 
 #ifndef _MSC_VER
 #ifdef BATCH_READ
-                        p_opt.m_searchInternalResultNum, 2, 2, p_opt.m_iSSDNumberOfThreads
+                        min(1024, p_opt.m_searchInternalResultNum), 2, 2, p_opt.m_iSSDNumberOfThreads
 #else
                         p_opt.m_searchInternalResultNum * p_opt.m_iSSDNumberOfThreads / p_opt.m_ioThreads + 1, 2, 2, p_opt.m_ioThreads
 #endif
@@ -925,6 +925,25 @@ namespace SPTAG
                 auto elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>(t5 - t1).count();
                 SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Total used time: %.2lf minutes (about %.2lf hours).\n", elapsedSeconds / 60.0, elapsedSeconds / 3600.0);
              
+                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Start to output vector to head!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+                std::ofstream out(p_opt.m_indexDirectory + FolderSep + "vector2head.bin");
+                if (out.is_open()) {
+                    int size = 0;
+                    for (const auto &edge: selections.m_selections) {
+                        if (edge.node == INT_MAX || edge.tonode == INT_MAX) continue;
+                        size++;
+                    }
+                    out.write(reinterpret_cast<const char*>(&size), sizeof(int));
+
+                    for (const auto& edge : selections.m_selections) {
+                        if (edge.node == INT_MAX || edge.tonode == INT_MAX) continue;
+                        out.write(reinterpret_cast<const char*>(&edge.tonode), sizeof(int));
+                        out.write(reinterpret_cast<const char*>(&edge.node), sizeof(int));
+                    }
+                    out.close();
+                } else {
+                    SPTAGLIB_LOG(Helper::LogLevel::LL_Error, "Failed to open vector2head.bin for writing!\n");
+                }
                 return true;
             }
 

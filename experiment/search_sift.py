@@ -31,7 +31,7 @@ def build_config(dir, template_config_path, max_check, internal_result_num):
 
 def test_spann(dir, template_config_path, max_cjeck, internal_result_num):
   config_path = build_config(dir, template_config_path, max_check, internal_result_num)
-  command = './../Release/ssdserving  {} > {}/log_{}_{}.c 2>&1'.format(config_path, dir, max_check, internal_result_num)
+  command = './../Release/ssdserving  {} > {}/{}_{}.log 2>&1'.format(config_path, dir, max_check, internal_result_num)
 
   print("Running command: {}".format(command))
   
@@ -40,7 +40,7 @@ def test_spann(dir, template_config_path, max_cjeck, internal_result_num):
 
 if __name__ == "__main__":
   if len(sys.argv) != 4:
-    print("Usage: python run_sift1m.py <max_check> <internal_result_num> <template_config_path>")
+    print("Usage: python search_sift.py <max_check> <internal_result_num> <template_config_path>")
     sys.exit(1)
 
   max_check = int(sys.argv[1])
@@ -48,7 +48,8 @@ if __name__ == "__main__":
   template_config_path = sys.argv[3]
 
   # dir = 'sift1m_exp_result_6_17'
-  dir = 'sift1m_exp_result'
+  # dir = 'sift1m_exp_result'
+  dir = 'sift100m_exp_result'
 
   os.makedirs(dir, exist_ok=True)
   

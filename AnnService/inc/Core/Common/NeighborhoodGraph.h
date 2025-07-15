@@ -127,8 +127,10 @@ namespace SPTAG
             void PartitionByTptree(VectorIndex* index, std::vector<SizeType>& indices, const SizeType first, const SizeType last,
                 std::vector<std::pair<SizeType, SizeType>>& leaves)
             {
+                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "PartitionByTptree: first = %d, last = %d, size = %d\n", first, last, last - first + 1);
                 if (index->m_pQuantizer)
                 {
+                    SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "PartitionByTptree: has quantizer\n");
                     switch (index->m_pQuantizer->GetReconstructType())
                     {
 #define DefineVectorValueType(Name, Type) \
@@ -144,6 +146,7 @@ break;
                 }
                 else
                 {
+                    SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "PartitionByTptree: no quantizer\n" );
                     PartitionByTptreeCore<T, T>(index, indices, first, last, leaves);
                 }
             }
@@ -152,6 +155,7 @@ break;
             void PartitionByTptreeCore(VectorIndex* index, std::vector<SizeType>& indices, const SizeType first, const SizeType last,
                 std::vector<std::pair<SizeType, SizeType>>& leaves)
             {
+                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "PartitionByTptreeCore: first = %d, last = %d, size = %d\n", first, last, last - first + 1);
                 if (last - first <= m_iTPTLeafSize)
                 {
                     leaves.emplace_back(first, last);
@@ -344,6 +348,7 @@ break;
                                     p1 = (idmap->find(p1) == idmap->end()) ? p1 : idmap->at(p1);
                                     p2 = (idmap->find(p2) == idmap->end()) ? p2 : idmap->at(p2);
                                 }
+                                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "TPTree %d: %d %d dist = %f\n", i, p1, p2, dist);
                                 COMMON::Utils::AddNeighbor(p2, dist, (m_pNeighborhoodGraph)[p1], (NeighborhoodDists)[p1], m_iNeighborhoodSize);
                                 COMMON::Utils::AddNeighbor(p1, dist, (m_pNeighborhoodGraph)[p2], (NeighborhoodDists)[p2], m_iNeighborhoodSize);
                             }
