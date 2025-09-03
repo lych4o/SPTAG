@@ -26,7 +26,7 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
     endif()
     set (CMAKE_CXX_FLAGS "-Wall -Wunreachable-code -Wno-reorder -Wno-delete-non-virtual-dtor -Wno-sign-compare -Wno-unknown-pragmas -Wcast-align -lm -lrt -std=c++14 -fopenmp")
     set (CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3 -march=native")
-    set (CMAKE_CXX_FLAGS_DEBUG   "-g -DDEBUG -O0 -fsanitize=address")
+    set (CMAKE_CXX_FLAGS_DEBUG   "-g -DDEBUG -O0 -march=native")
 
 
     find_path(NUMA_INCLUDE_DIR NAME numa.h

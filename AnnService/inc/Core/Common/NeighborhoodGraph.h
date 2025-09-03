@@ -127,10 +127,8 @@ namespace SPTAG
             void PartitionByTptree(VectorIndex* index, std::vector<SizeType>& indices, const SizeType first, const SizeType last,
                 std::vector<std::pair<SizeType, SizeType>>& leaves)
             {
-                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "PartitionByTptree: first = %d, last = %d, size = %d\n", first, last, last - first + 1);
                 if (index->m_pQuantizer)
                 {
-                    SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "PartitionByTptree: has quantizer\n");
                     switch (index->m_pQuantizer->GetReconstructType())
                     {
 #define DefineVectorValueType(Name, Type) \
@@ -146,7 +144,6 @@ break;
                 }
                 else
                 {
-                    SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "PartitionByTptree: no quantizer\n" );
                     PartitionByTptreeCore<T, T>(index, indices, first, last, leaves);
                 }
             }
@@ -155,7 +152,7 @@ break;
             void PartitionByTptreeCore(VectorIndex* index, std::vector<SizeType>& indices, const SizeType first, const SizeType last,
                 std::vector<std::pair<SizeType, SizeType>>& leaves)
             {
-                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "PartitionByTptreeCore: first = %d, last = %d, size = %d\n", first, last, last - first + 1);
+                // SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "PartitionByTptreeCore: first = %d, last = %d, size = %d\n", first, last, last - first + 1);
                 if (last - first <= m_iTPTLeafSize)
                 {
                     leaves.emplace_back(first, last);
@@ -317,13 +314,14 @@ break;
                         (NeighborhoodDists)[i][j] = MaxDist;
 
                 auto t1 = std::chrono::high_resolution_clock::now();
-                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Parallel TpTree Partition begin\n");
+                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Parallel TpTree Partition begin:\n");
 #pragma omp parallel for schedule(dynamic)
                 for (int i = 0; i < m_iTPTNumber; i++)
                 {
+                    std::mt19937 rg_local(static_cast<unsigned int>(std::chrono::high_resolution_clock::now().time_since_epoch().count()));
                     Sleep(i * 100); std::srand(clock());
                     for (SizeType j = 0; j < m_iGraphSize; j++) TptreeDataIndices[i][j] = j;
-                    std::shuffle(TptreeDataIndices[i].begin(), TptreeDataIndices[i].end(), rg);
+                    std::shuffle(TptreeDataIndices[i].begin(), TptreeDataIndices[i].end(), rg_local);
                     PartitionByTptree<T>(index, TptreeDataIndices[i], 0, m_iGraphSize - 1, TptreeLeafNodes[i]);
                     SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Finish Getting Leaves for Tree %d\n", i);
                 }
@@ -350,7 +348,7 @@ break;
                                     p1 = (idmap->find(p1) == idmap->end()) ? p1 : idmap->at(p1);
                                     p2 = (idmap->find(p2) == idmap->end()) ? p2 : idmap->at(p2);
                                 }
-                                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "TPTree %d: %d %d dist = %f\n", i, p1, p2, dist);
+                                // SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "TPTree %d: %d %d dist = %f\n", i, p1, p2, dist);
                                 COMMON::Utils::AddNeighbor(p2, dist, (m_pNeighborhoodGraph)[p1], (NeighborhoodDists)[p1], m_iNeighborhoodSize);
                                 COMMON::Utils::AddNeighbor(p1, dist, (m_pNeighborhoodGraph)[p2], (NeighborhoodDists)[p2], m_iNeighborhoodSize);
                             }

@@ -165,11 +165,11 @@ namespace SPTAG {
 			}
 
 			if (searchSSD) {
-				SPTAG::COMMON::DistanceUtils::ResetDistanceCalcCount();
-				SPTAG::COMMON::DistanceUtils::EnableDistanceCalcCount();
 				
 #define DefineVectorValueType(Name, Type) \
 	if (opts->m_valueType == VectorValueType::Name) { \
+		SPTAG::COMMON::DistanceUtils::ResetDistanceCalcCount(); \
+		SPTAG::COMMON::DistanceUtils::EnableDistanceCalcCount(); \
         SSDIndex::Search((SPANN::Index<Type>*)(index.get())); \
 	} \
 

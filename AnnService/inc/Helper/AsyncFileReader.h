@@ -538,9 +538,11 @@ namespace SPTAG
                 m_iocps.resize(threadPoolSize);
                 memset(m_iocps.data(), 0, sizeof(aio_context_t) * threadPoolSize);
                 for (int i = 0; i < threadPoolSize; i++) {
-                    auto ret = syscall(__NR_io_setup, (int)maxIOSize, &(m_iocps[i]));
+                    // auto ret = syscall(__NR_io_setup, (int)maxIOSize, &(m_iocps[i]));
+                    int real_maxIOSize = min((int)maxIOSize, 512);
+                    auto ret = syscall(__NR_io_setup, (int)real_maxIOSize, &(m_iocps[i]));
                     if (ret < 0) {
-                        SPTAGLIB_LOG(LogLevel::LL_Error, "Cannot setup aio: %s\n", strerror(errno));
+                        SPTAGLIB_LOG(LogLevel::LL_Error, "Cannot setup aio: %s, maxIOSize: %lu, real_maxIOSize: %lu\n", strerror(errno), maxIOSize, real_maxIOSize);
                         return false;
                     }
                 }

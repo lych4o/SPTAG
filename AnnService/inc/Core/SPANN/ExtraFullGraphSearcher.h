@@ -925,6 +925,7 @@ namespace SPTAG
                 auto elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>(t5 - t1).count();
                 SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Total used time: %.2lf minutes (about %.2lf hours).\n", elapsedSeconds / 60.0, elapsedSeconds / 3600.0);
              
+                /*
                 SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Start to output vector to head!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
                 std::ofstream out(p_opt.m_indexDirectory + FolderSep + "vector2head.bin");
                 if (out.is_open()) {
@@ -944,6 +945,7 @@ namespace SPTAG
                 } else {
                     SPTAGLIB_LOG(Helper::LogLevel::LL_Error, "Failed to open vector2head.bin for writing!\n");
                 }
+                */
                 return true;
             }
 
@@ -1331,6 +1333,8 @@ namespace SPTAG
                 auto ptr = SPTAG::f_createIO();
                 int retry = 3;
                 // open file 
+                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Opening file %s...\n", p_outputFile.c_str());
+                
                 while (retry > 0 && (ptr == nullptr || !ptr->Initialize(p_outputFile.c_str(), std::ios::binary | std::ios::out)))
                 {
                     SPTAGLIB_LOG(Helper::LogLevel::LL_Error, "Failed open file %s, retrying...\n", p_outputFile.c_str());

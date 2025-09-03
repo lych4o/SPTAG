@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
   # dir = 'sift1m_exp_result_6_17'
   # dir = 'sift1m_exp_result'
-  dir = 'sift100m_exp_result'
+  dir = 'sift100m_7_23_exp_result'
 
   os.makedirs(dir, exist_ok=True)
   

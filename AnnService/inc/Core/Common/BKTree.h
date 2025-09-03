@@ -576,11 +576,19 @@ break;
                     m_pTreeRoots.emplace_back((SizeType)localindices.size());
                     SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Start to build BKTree %d\n", i + 1);
 
+                    std::atomic<size_t> processNodes(0);
                     ss.push(BKTStackItem(m_pTreeStart[i], 0, (SizeType)localindices.size(), true));
                     while (!ss.empty()) {
                         if (abort && abort->ShouldAbort()) return;
 
                         BKTStackItem item = ss.top(); ss.pop();
+                        size_t cur_process = processNodes.fetch_add(1);
+                        if (cur_process % 1000000 == 0) {
+                            SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Processed %zu nodes so far\n", cur_process);
+                            SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "BKT progress: tree %d, node %zu, samples [%zu, %zu), size=%zu\n",
+                                i + 1, item.index, item.first, item.last, item.last - item.first);
+                        }
+
                         m_pTreeRoots[item.index].childStart = (SizeType)m_pTreeRoots.size();
                         if (item.last - item.first <= m_iBKTLeafSize) {
                             for (SizeType j = item.first; j < item.last; j++) {

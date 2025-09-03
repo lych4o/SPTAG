@@ -465,3 +465,6 @@ FodyWeavers.xsd
 
 # VS code
 .vscode
+
+# log
+log*.c

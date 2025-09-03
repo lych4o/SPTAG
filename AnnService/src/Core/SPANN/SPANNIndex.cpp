@@ -823,7 +823,7 @@ namespace SPTAG
                 }
             }
 
-            SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Begin Select Head...\n");
+            SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Begin Select Head... : %d\n", m_options.m_selectHead);
             auto t1 = std::chrono::high_resolution_clock::now();
             if (m_options.m_selectHead) {
                 omp_set_num_threads(m_options.m_iSelectHeadNumberOfThreads);
@@ -850,6 +850,7 @@ namespace SPTAG
                 auto valueType = m_pQuantizer ? SPTAG::VectorValueType::UInt8 : m_options.m_valueType;
                 auto dims = m_pQuantizer ? m_pQuantizer->GetNumSubvectors() : m_options.m_dim;
 
+                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "indexAlgo: %s, ValueType: %s, Dimension: %d\n", Helper::Convert::ConvertToString(m_options.m_indexAlgoType).c_str(), Helper::Convert::ConvertToString(valueType).c_str(), dims);
                 m_index = SPTAG::VectorIndex::CreateInstance(m_options.m_indexAlgoType, valueType);
                 m_index->SetParameter("DistCalcMethod", SPTAG::Helper::Convert::ConvertToString(m_options.m_distCalcMethod));
                 m_index->SetQuantizer(m_pQuantizer);
@@ -860,6 +861,7 @@ namespace SPTAG
 
                 std::shared_ptr<Helper::ReaderOptions> vectorOptions(new Helper::ReaderOptions(valueType, dims, VectorFileType::DEFAULT));
                 auto vectorReader = Helper::VectorSetReader::CreateInstance(vectorOptions);
+                SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Begin loading head vector file %s...\n", (m_options.m_indexDirectory + FolderSep + m_options.m_headVectorFile).c_str());
                 if (ErrorCode::Success != vectorReader->LoadFile(m_options.m_indexDirectory + FolderSep + m_options.m_headVectorFile))
                 {
                     SPTAGLIB_LOG(Helper::LogLevel::LL_Error, "Failed to read head vector file.\n");

@@ -759,6 +759,15 @@ namespace SPTAG
 
             auto t1 = std::chrono::high_resolution_clock::now();
             m_pTrees.BuildTrees<T>(m_pSamples, m_iDistCalcMethod, m_iNumberOfThreads);
+            /*
+            std::string filename = "/home/ycli/data/learn.100M.u8bin.bkt.32_8_1_10000_0.bin";
+            ErrorCode err_code = m_pTrees.LoadTrees(filename);
+            if (err_code != ErrorCode::Success) {
+                SPTAGLIB_LOG(Helper::LogLevel::LL_Error, "Failed to load trees: %d\n", err_code);
+                return err_code;
+            }
+            */
+
             auto t2 = std::chrono::high_resolution_clock::now();
             SPTAGLIB_LOG(Helper::LogLevel::LL_Info, "Build Tree time (s): %lld\n", std::chrono::duration_cast<std::chrono::seconds>(t2 - t1).count());
             
